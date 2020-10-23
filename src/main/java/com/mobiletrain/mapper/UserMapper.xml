@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mobiletrain.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="User" autoMapping="true">
+        <id property="id" column="uid"/>
+    </resultMap>
+
+    <sql id="UserList">
+        tb_user.id as uid , username , password , email , gender , flag , role , code
+    </sql>
+
+    <insert id="insert">
+
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+
+        insert into tb_user(username,password,email,gender,flag,role,code) values
+        (#{username},#{password},#{email},#{gender},#{flag},#{role},#{code})
+    </insert>
+
+    <select id="queryByUsername" resultMap="UserResultMap">
+        select <include refid="UserList"/> from tb_user where username = #{username}
+    </select>
+
+    <select id="queryByEmail" resultMap="UserResultMap">
+        select <include refid="UserList"/> from tb_user where email = #{email}
+    </select>
+
+    <select id="query" resultMap="UserResultMap">
+        select <include refid="UserList"/> from tb_user where username = #{username} and password = #{password}
+    </select>
+
+    <update id="active">
+        update tb_user set flag = 2 where code = #{code}
+    </update>
+</mapper>

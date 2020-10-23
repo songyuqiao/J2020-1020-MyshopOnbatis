@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mobiletrain.mapper.OrderDetailMapper">
+    <resultMap id="OrderDetailResultMap" type="OrderDetail" autoMapping="true">
+        <id property="id" column="odid"/>
+        <collection property="order"
+                    resultMap="com.mobiletrain.mapper.OrderMapper.OrderResultMap"
+                    autoMapping="true"/>
+    </resultMap>
+
+    <sql id="OrderDetailList">
+        tb_orderdetail.id as odid , oid , pid , num , tb_orderdetail.money , tb_order.money
+    </sql>
+
+    <insert id="insert">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into tb_orderdetail(oid , pid , num , money) values(#{oid} , #{pid} , #{num} , #{money})
+    </insert>
+
+    <select id="queryByOid" resultMap="OrderDetailResultMap">
+        select
+        <include refid="OrderDetailList"/>
+        from tb_orderdetail
+        inner join tb_order on tb_order.id = tb_orderdetail.oid
+        where oid = #{oid}
+    </select>
+</mapper>

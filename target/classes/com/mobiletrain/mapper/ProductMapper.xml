@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mobiletrain.mapper.ProductMapper">
+    <resultMap id="ProductResultMap" type="Product">
+        <id property="id" column="pid"/>
+    </resultMap>
+
+    <sql id="ProductList">
+        tb_product.id as pid , name , pubdate , picture , price , star , intro , typeid
+    </sql>
+
+    <insert id="insert">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into tb_product(name,pubdate,picture,price,star,intro,typeid) values
+        (#{name} , #{pubdate} , #{picture} , #{price} , #{star} , #{intro} , #{typeid})
+    </insert>
+
+    <select id="queryPage" resultMap="ProductResultMap">
+        select <include refid="ProductList"/> from tb_product
+    </select>
+
+    <delete id="delete">
+        delete from tb_product where id = #{id}
+    </delete>
+</mapper>

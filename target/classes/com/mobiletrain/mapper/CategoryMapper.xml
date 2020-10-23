@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mobiletrain.mapper.CategoryMapper">
+
+    <resultMap id="CategoryResultMap" type="Category">
+        <id property="id" column="cid"/>
+    </resultMap>
+
+    <sql id="CategoryList">
+        tb_category.id as cid , name , level , parent
+    </sql>
+
+    <insert id="insert">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into tb_category(name , level , parent) values(#{name} , #{level} , #{parent})
+    </insert>
+
+    <select id="queryByParent" resultMap="CategoryResultMap">
+        select <include refid="CategoryList"/> from tb_category where parent = #{parentId}
+    </select>
+
+    <select id="queryAll" resultMap="CategoryResultMap">
+        select <include refid="CategoryList"/> from tb_category
+    </select>
+
+</mapper>
